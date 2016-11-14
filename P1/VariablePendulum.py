@@ -6,18 +6,27 @@ Created on Sat Nov 12 11:37:28 2016
 """
 
 # Till projekt 1, uppgift 3.
-# Använder nu bara cvode och inga andra lösare.
 
 import numpy as np
 from assimulo.solvers import CVode
 from assimulo.problem import Explicit_Problem
+from assimulo.exception import Explicit_ODE_Exception
 import matplotlib.pyplot as plt
+from bdf2 import BDF_2
+from ee import EE
+
+
+
+
+# Input:
+solver_array=["BDF_2","EE"]# Testar olika lösare, input i textformat
+k_array = [1e3,1e5] # Testar olika fjäderkonstanter
+stretch_array = [.05]  # Testar olika förspänningar; 0 = inte utsträckt
+
 
 global k
 global stretch
-
-
-# Input längs ner.
+global solver
 
 
 
@@ -40,7 +49,9 @@ def doSimulate():
 
         theta0 = 1.0 # radianer, startvinkel från lodrätt
         
-        tfinal = 5
+        tfinal = 3
+        
+        title = 'k = {0}, stretch = {1}, {2}'.format(k,stretch,solver)
         
         r0 = 1.0 + stretch
         x0 = r0*np.sin(theta0)
@@ -50,35 +61,46 @@ def doSimulate():
         y_init = np.array([x0,y0,0,0])
         
         ElasticSpring = Explicit_Problem(rhs,y_init,t0)
-        sim = CVode(ElasticSpring)
+        if solver.lower() == "cvode":
+            sim = CVode(ElasticSpring)
+        elif solver.lower() =="bdf_2":
+            sim = BDF_2(ElasticSpring)
+        elif solver.lower() =="ee":
+            sim = EE(ElasticSpring)
+        else:
+            sim == None
+            raise ValueError('Expected "CVode", "EE" or "BDF_2"')
         sim.report_continuously=False
         
         npoints = 100*tfinal
         
-        t,y = sim.simulate(tfinal,npoints)
+        #t,y = sim.simulate(tfinal,npoints)
+        try:
+            t,y = sim.simulate(tfinal)
+            xpos, ypos = y[:,0], y[:,1]
+            #plt.plot(t,y[:,0:2])
+            plt.plot(xpos,ypos)
+            
+            plt.xlabel('y_1')
+            plt.ylabel('y_2')
+            plt.title(title)
+            plt.axis('equal')
+            plt.show()
+        except Explicit_ODE_Exception:
+            print("Solver did not converge within the specified no. of steps for {0}.".format(title))
+
         
-        xpos, ypos = y[:,0], y[:,1]
-        #plt.plot(t,y[:,0:2])
-        plt.plot(xpos,ypos)
-        title = 'k = {0}, stretch = {1}'.format(k,stretch)
-        plt.xlabel('y_1')
-        plt.ylabel('y_2')
-        plt.title(title)
-        plt.axis('equal')
-        plt.show()
-        
-        
-def multiSimulate(k_array,stretch_array):
-    for next_k in k_array:
-        global k
-        k = next_k
-        for next_stretch in stretch_array:
-            global stretch
-            stretch = next_stretch
-            doSimulate()
+def multiSimulate(k_array,stretch_array,solver_array):
+    for next_solver in solver_array:
+        global solver
+        solver = next_solver
+        for next_k in k_array:
+            global k
+            k = next_k
+            for next_stretch in stretch_array:
+                global stretch
+                stretch = next_stretch
+                doSimulate()
 
 if __name__ == "__main__":
-    # Input
-    k_array = [1e3,1e5] # Testar olika fjäderkonstanter
-    stretch_array = [0,.1]  # Testar olika förspänningar; 0 = inte utsträckt
-    multiSimulate(k_array,stretch_array)
+    multiSimulate(k_array,stretch_array,solver_array)
