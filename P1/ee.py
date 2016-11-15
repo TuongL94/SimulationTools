@@ -77,5 +77,5 @@ class EE(Explicit_ODE):
         self.log_message(' Number of Function Evaluations : '+str(self.statistics["nfcns"]),         verbose)
             
         self.log_message('\nSolver options:\n',                                    verbose)
-        self.log_message(' Solver            : BDF2',                     verbose)
+        self.log_message(' Solver            : EE',                     verbose)
         self.log_message(' Solver type       : Fixed step\n',                      verbose)
