@@ -20,8 +20,8 @@ from ee import EE
 
 # Input:
 solver_array=["BDF_2","EE"]# Testar olika lösare, input i textformat
-k_array = [1e3,1e5] # Testar olika fjäderkonstanter
-stretch_array = [.05]  # Testar olika förspänningar; 0 = inte utsträckt
+k_array = 10.0**np.arange(2,6) # Testar olika fjäderkonstanter
+stretch_array = [.02]  # Testar olika förspänningar; 0 = inte utsträckt
 
 
 global k
@@ -80,7 +80,7 @@ def doSimulate():
             xpos, ypos = y[:,0], y[:,1]
             #plt.plot(t,y[:,0:2])
             plt.plot(xpos,ypos)
-            
+            plt.plot(xpos[0],ypos[0],'or')
             plt.xlabel('y_1')
             plt.ylabel('y_2')
             plt.title(title)
@@ -90,17 +90,14 @@ def doSimulate():
             print("Solver did not converge within the specified no. of steps for {0}.".format(title))
 
         
-def multiSimulate(k_array,stretch_array,solver_array):
-    for next_solver in solver_array:
-        global solver
-        solver = next_solver
-        for next_k in k_array:
-            global k
-            k = next_k
-            for next_stretch in stretch_array:
-                global stretch
-                stretch = next_stretch
-                doSimulate()
+#def multiSimulate(k_array,stretch_array,solver_array):
+for next_solver in solver_array:
+    solver = next_solver
+    for next_k in k_array:
+        k = next_k
+        for next_stretch in stretch_array:
+            stretch = next_stretch
+            doSimulate()
 
-if __name__ == "__main__":
-    multiSimulate(k_array,stretch_array,solver_array)
+#if __name__ == "__main__":
+#    multiSimulate(k_array,stretch_array,solver_array)
