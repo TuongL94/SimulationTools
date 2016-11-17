@@ -19,7 +19,7 @@ from ee import EE
 
 
 # Input:
-solver_array=["BDF_2","EE"]# Testar olika lösare, input i textformat
+solver_array=["CVode","BDF_2","EE",]# Testar olika lösare, input i textformat
 k_array = 10.0**np.arange(2,6) # Testar olika fjäderkonstanter
 stretch_array = [.02]  # Testar olika förspänningar; 0 = inte utsträckt
 
@@ -76,6 +76,7 @@ def doSimulate():
         
         #t,y = sim.simulate(tfinal,npoints)
         try:
+        #for i in [1]:
             t,y = sim.simulate(tfinal)
             xpos, ypos = y[:,0], y[:,1]
             #plt.plot(t,y[:,0:2])
@@ -86,8 +87,9 @@ def doSimulate():
             plt.title(title)
             plt.axis('equal')
             plt.show()
-        except Explicit_ODE_Exception:
-            print("Solver did not converge within the specified no. of steps for {0}.".format(title))
+        except Explicit_ODE_Exception as e:
+            print(e.message)
+            print("for the case {0}.".format(title))
 
         
 #def multiSimulate(k_array,stretch_array,solver_array):
