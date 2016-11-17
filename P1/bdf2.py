@@ -3,6 +3,8 @@ from assimulo.ode import *
 import numpy as np
 import matplotlib.pyplot as mpl
 import scipy.linalg as SL
+import scipy.optimize as SO
+
 # from assimulo.solvers import CVode
 
 class BDF_2(Explicit_ODE):
@@ -10,7 +12,7 @@ class BDF_2(Explicit_ODE):
     BDF-2   (Example of how to set-up own integrators for Assimulo)
     """
     tol=1.e-8     
-    maxit=1000
+    maxit=100
     maxsteps=5000
     
     def __init__(self, problem):
@@ -87,15 +89,23 @@ class BDF_2(Explicit_ODE):
         # predictor
         t_np1=t_n+h
         y_np1_i=y_n   # zero order predictor
-        # corrector with fixed point iteration
+
+        # Korrektor med fsolve
+        its = []
         for i in range(self.maxit):
             self.statistics["nfcns"] += 1
-            
-            y_np1_ip1=(-(alpha[1]*y_n+alpha[2]*y_nm1)+h*f(t_np1,y_np1_i))/alpha[0]
+            def lhs(y):
+                return (y-y_n)/h
+            def optimand(y):
+                return lhs(y)-f((t_np1+t_n)/2.,y)
+            y_np1_ip1=SO.fsolve(optimand,y_n)
             if SL.norm(y_np1_ip1-y_np1_i) < self.tol:
                 return t_np1,y_np1_ip1
             y_np1_i=y_np1_ip1
+            its.append(y_np1_i)
         else:
+            mpl.plot(its)
+            mpl.show()
             raise Explicit_ODE_Exception('Corrector could not converge within % iterations'%i)
             
     def print_statistics(self, verbose=NORMAL):
