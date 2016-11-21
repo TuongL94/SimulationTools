@@ -91,14 +91,11 @@ class BDF_2(Explicit_ODE):
         y_np1_i=y_n   # zero order predictor
 
         # Korrektor med fsolve
-        its = []
         for i in range(self.maxit):
             self.statistics["nfcns"] += 1
-            def lhs(y):
-                return (y-y_n)/h
             def optimand(y):
-                return lhs(y)-f((t_np1+t_n)/2.,y)
-            y_np1_ip1=SO.fsolve(optimand,y_n)
+                return alpha[0]*y+alpha[1]*y_n+alpha[2]*y_nm1-h*f(t_np1,y)
+            y_np1_ip1 = SO.fsolve(optimand,y_n)
             if SL.norm(y_np1_ip1-y_np1_i) < self.tol:
                 return t_np1,y_np1_ip1
             y_np1_i=y_np1_ip1
