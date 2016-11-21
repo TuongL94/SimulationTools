@@ -99,7 +99,6 @@ class BDF_2(Explicit_ODE):
             if SL.norm(y_np1_ip1-y_np1_i) < self.tol:
                 return t_np1,y_np1_ip1
             y_np1_i=y_np1_ip1
-            its.append(y_np1_i)
         else:
             mpl.plot(its)
             mpl.show()
