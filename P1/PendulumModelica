@@ -1,0 +1,17 @@
+model Pendulum
+  parameter Real k=100;
+  Real x(start = 1.0*sin(pi/4),fixed=true);
+  Real y(start = -1.0*cos(pi/4),fixed=true);
+  Real vx(start = 0,fixed=true);
+  Real vy(start = 0,fixed=true);
+  Real lambda;
+
+equation 
+  lambda = k*(sqrt((x^2+y^2))-1)/sqrt((x^2+y^2));
+  der(x) = vx;
+  der(y) = vy;
+  der(vx) = -x*lambda;
+  der(vy) = -y*lambda - 1;
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+        coordinateSystem(preserveAspectRatio=false)));
+end Pendulum;
