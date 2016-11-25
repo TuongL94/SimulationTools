@@ -92,10 +92,10 @@ class BDF_2(Explicit_ODE):
 
         # Korrektor med fsolve
         for i in range(self.maxit):
-            self.statistics["nfcns"] += 1
             def optimand(y):
                 return alpha[0]*y+alpha[1]*y_n+alpha[2]*y_nm1-h*f(t_np1,y)
-            y_np1_ip1 = SO.fsolve(optimand,y_n)
+            y_np1_ip1, infodict, _, _ = SO.fsolve(optimand,y_n,full_output=True)
+            self.statistics["nfcns"] += infodict["nfev"]
             if SL.norm(y_np1_ip1-y_np1_i) < self.tol:
                 return t_np1,y_np1_ip1
             y_np1_i=y_np1_ip1
