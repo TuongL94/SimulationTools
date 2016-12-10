@@ -28,9 +28,20 @@ model Squeezer
 
 
   // Geometri
+  constant Real c_0 = 4530;
   constant Real d = 0.028;
+  constant Real da = 0.0115;
   constant Real e = 0.02;
+  constant Real ea = 0.01421;
+  constant Real fa = ea;
+  constant Real l_0 = 0.07785;
+  constant Real ra = 0.00092;
   constant Real rr = 0.007;
+  constant Real sa = 0.01874;
+  constant Real sb = 0.01043;
+  constant Real sc = 0.018;
+  constant Real sd = 0.02;
+  constant Real ss = 0.035;
   constant Real ta = 0.02308;
   constant Real tb = 0.00916;
   constant Real u = 0.04;
@@ -59,14 +70,13 @@ model Squeezer
     annotation (Placement(transformation(extent={{6,6},{-6,-6}},
         rotation=180,
         origin={84,-26})));
-  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(r={xa,ya,
-        0}, animation=false)
-            annotation (Placement(transformation(
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation OA(r={xa,ya,0}, animation
+      =false) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={-30,-6})));
-  Modelica.Mechanics.MultiBody.Joints.Revolute A(w(fixed=false), phi(fixed=false,
-        start=-0.5235987755983))
+  Modelica.Mechanics.MultiBody.Joints.Revolute A(w(fixed=true), phi(fixed=false,
+        start=-0.26179938779915))
     annotation (Placement(transformation(extent={{5,-5},{-5,5}},
         rotation=90,
         origin={-87,-39})));
@@ -77,80 +87,109 @@ model Squeezer
     v_0(fixed=true),
     r={u,0,0},
     animateSphere=true,
-    r_CM={getCM(
-        ua,
-        u - ua,
-        ub),-ub/2,0})
+    r_CM={ua,-ub,0})
     annotation (Placement(transformation(extent={{-52,-54},{-32,-34}})));
   Modelica.Mechanics.MultiBody.Parts.BodyShape K6(
     shapeType="beam",
-    v_0(fixed=true),
     animateSphere=true,
     m=m6,
     I_33=I6,
     r={zf,0,0},
-    r_CM={zf/2,0,0})
-             annotation (Placement(transformation(extent={{6,-46},{26,-26}})));
-  Modelica.Mechanics.MultiBody.Joints.Revolute revolute(phi(fixed=false, start=1.0471975511966))
+    r_CM={zf - fa,0,0},
+    v_0(fixed=false))
+             annotation (Placement(transformation(extent={{8,-46},{28,-26}})));
+  Modelica.Mechanics.MultiBody.Joints.Revolute K6_K7(phi(fixed=false, start=1.0471975511966))
     annotation (Placement(transformation(extent={{-26,-50},{-16,-40}})));
   Modelica.Mechanics.MultiBody.Parts.BodyShape K5(
     shapeType="beam",
     v_0(fixed=true),
     animateSphere=true,
     r={zt,0,0},
-    r_CM={getCM(
-        ta,
-        zt - ta,
-        tb),tb/2,0},
     m=m5,
-    I_33=I5) annotation (Placement(transformation(extent={{-82,4},{-62,24}})));
-  Modelica.Mechanics.MultiBody.Joints.Revolute A1(phi(fixed=false), w(fixed=false))
+    I_33=I5,
+    r_CM={ta,tb,0})
+             annotation (Placement(transformation(extent={{-82,4},{-62,24}})));
+  Modelica.Mechanics.MultiBody.Joints.Revolute A1(                  w(fixed=
+          false), phi(fixed=false, start=0.69813170079773))
     annotation (Placement(transformation(extent={{5,-5},{-5,5}},
         rotation=90,
         origin={-93,-13})));
-  Modelica.Mechanics.MultiBody.Joints.Revolute revolute1
+  Modelica.Mechanics.MultiBody.Joints.Revolute K4_K5
     annotation (Placement(transformation(extent={{-54,10},{-44,20}})));
   Modelica.Mechanics.MultiBody.Parts.BodyShape K4(
     shapeType="beam",
-    v_0(fixed=true),
     animateSphere=true,
     r={e,0,0},
-    r_CM={e/2,0,0},
     m=m4,
-    I_33=I4) annotation (Placement(transformation(extent={{-18,2},{2,22}})));
+    I_33=I4,
+    r_CM={e - ea,0,0},
+    v_0(fixed=false))
+             annotation (Placement(transformation(extent={{-18,4},{2,24}})));
   Modelica.Mechanics.MultiBody.Joints.RevolutePlanarLoopConstraint revolute2
-    annotation (Placement(transformation(extent={{28,8},{38,18}})));
+    annotation (Placement(transformation(extent={{14,8},{24,18}})));
   Modelica.Mechanics.MultiBody.Parts.BodyShape K2(
     shapeType="beam",
     animateSphere=true,
     r={d,0,0},
-    r_CM={d/2,0,0},
     m=m2,
     I_33=I2,
-    v_0(fixed=false))
-             annotation (Placement(transformation(extent={{68,6},{88,26}})));
-  Modelica.Mechanics.MultiBody.Joints.Revolute revolute3(phi(fixed=false, start=
-         0))
-    annotation (Placement(transformation(extent={{48,12},{58,22}})));
-  Modelica.Mechanics.MultiBody.Joints.Revolute revolute4(phi(fixed=false, start=
-         0))
-    annotation (Placement(transformation(extent={{98,10},{108,20}})));
+    v_0(fixed=false),
+    r_CM={d - da,0,0})
+             annotation (Placement(transformation(extent={{116,14},{136,34}})));
   Modelica.Mechanics.MultiBody.Parts.BodyShape K1(
     shapeType="beam",
     v_0(fixed=true),
     animateSphere=true,
-    r={rr,0,0},
-    r_CM={rr/2,0,0},
     m=m1,
-    I_33=I1) annotation (Placement(transformation(extent={{124,-24},{144,-4}})));
+    I_33=I1,
+    r={rr,0,0},
+    r_CM={ra,0,0})
+             annotation (Placement(transformation(extent={{124,-24},{144,-4}})));
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation OB(animation=false, r={xb,
+        yb,0}) annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=90,
+        origin={28,42})));
+  Modelica.Mechanics.MultiBody.Parts.BodyShape K3(
+    shapeType="beam",
+    animateSphere=true,
+    v_0(fixed=false),
+    r={ss,0,0},
+    r_CM={sa,sb,0},
+    m=m3,
+    I_33=I3) annotation (Placement(transformation(extent={{62,54},{82,74}})));
+  Modelica.Mechanics.MultiBody.Joints.Revolute B(phi(fixed=false, start=-1.0471975511966),
+      w(fixed=false))
+    annotation (Placement(transformation(extent={{28,58},{38,68}})));
+  Modelica.Mechanics.MultiBody.Joints.Revolute revolute1(phi(fixed=false, start
+        =1.5707963267949))
+    annotation (Placement(transformation(extent={{106,-22},{116,-12}})));
+  Modelica.Mechanics.MultiBody.Joints.Revolute revolute3(phi(fixed=true, start=-1.0471975511966))
+    annotation (Placement(transformation(extent={{-5,-5},{5,5}},
+        rotation=90,
+        origin={151,7})));
+  Modelica.Mechanics.MultiBody.Joints.RevolutePlanarLoopConstraint revolute4
+    annotation (Placement(transformation(extent={{100,18},{110,28}})));
   Modelica.Mechanics.MultiBody.Joints.RevolutePlanarLoopConstraint revolute5
-    annotation (Placement(transformation(extent={{102,-24},{112,-14}})));
+    annotation (Placement(transformation(extent={{74,18},{84,28}})));
+  Modelica.Mechanics.MultiBody.Forces.Spring spring(c=c_0, s_unstretched=l_0)
+    annotation (Placement(transformation(extent={{124,80},{144,100}})));
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation OC(animation=false, r={xc,
+        yc,0}) annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=90,
+        origin={170,24})));
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation BD(r={sc,sd,0}, animation
+      =false) annotation (Placement(transformation(
+        extent={{-7,-7},{7,7}},
+        rotation=90,
+        origin={63,83})));
 equation 
-  connect(world.frame_b, fixedTranslation.frame_a) annotation (Line(
+  connect(world.frame_b, OA.frame_a) annotation (Line(
       points={{90,-26},{90,-6},{34,-6},{-20,-6}},
       color={95,95,95},
       thickness=0.5));
-  connect(fixedTranslation.frame_b, A.frame_a) annotation (Line(
+  connect(OA.frame_b, A.frame_a) annotation (Line(
       points={{-40,-6},{-48,-6},{-48,-24},{-87,-24},{-87,-34}},
       color={95,95,95},
       thickness=0.5));
@@ -158,12 +197,12 @@ equation
       points={{-52,-44},{-87,-44}},
       color={95,95,95},
       thickness=0.5));
-  connect(revolute.frame_a, K7.frame_b) annotation (Line(
+  connect(K6_K7.frame_a, K7.frame_b) annotation (Line(
       points={{-26,-45},{-30,-45},{-30,-44},{-32,-44}},
       color={95,95,95},
       thickness=0.5));
-  connect(K6.frame_a, revolute.frame_b) annotation (Line(
-      points={{6,-36},{-12,-36},{-12,-45},{-16,-45}},
+  connect(K6.frame_a, K6_K7.frame_b) annotation (Line(
+      points={{8,-36},{-12,-36},{-12,-45},{-16,-45}},
       color={95,95,95},
       thickness=0.5));
   connect(A1.frame_b, A.frame_a) annotation (Line(
@@ -174,50 +213,84 @@ equation
       points={{-82,14},{-88,14},{-88,-8},{-93,-8}},
       color={95,95,95},
       thickness=0.5));
-  connect(K5.frame_b, revolute1.frame_a) annotation (Line(
+  connect(K5.frame_b, K4_K5.frame_a) annotation (Line(
       points={{-62,14},{-64,14},{-64,15},{-54,15}},
       color={95,95,95},
       thickness=0.5));
-  connect(K4.frame_a, revolute1.frame_b) annotation (Line(
-      points={{-18,12},{-34,12},{-34,15},{-44,15}},
+  connect(K4.frame_a, K4_K5.frame_b) annotation (Line(
+      points={{-18,14},{-44,15}},
       color={95,95,95},
       thickness=0.5));
   connect(K4.frame_b, revolute2.frame_a) annotation (Line(
-      points={{2,12},{16,12},{16,13},{28,13}},
+      points={{2,14},{14,13}},
       color={95,95,95},
       thickness=0.5));
   connect(revolute2.frame_b, K6.frame_b) annotation (Line(
-      points={{38,13},{38,14},{38,-10},{38,-36},{26,-36}},
+      points={{24,13},{24,14},{66,14},{66,-34},{28,-34},{28,-36}},
       color={95,95,95},
       thickness=0.5));
-  connect(revolute3.frame_a, revolute2.frame_b) annotation (Line(
-      points={{48,17},{44,17},{44,13},{38,13}},
+  connect(OB.frame_a, world.frame_b) annotation (Line(
+      points={{28,32},{90,32},{90,-26}},
       color={95,95,95},
       thickness=0.5));
-  connect(revolute3.frame_b, K2.frame_a) annotation (Line(
-      points={{58,17},{62,17},{62,16},{68,16}},
+  connect(OB.frame_b, B.frame_a) annotation (Line(
+      points={{28,52},{28,63}},
       color={95,95,95},
       thickness=0.5));
-  connect(K2.frame_b, revolute4.frame_a) annotation (Line(
-      points={{88,16},{98,16},{98,15}},
+  connect(B.frame_b, K3.frame_a) annotation (Line(
+      points={{38,63},{46,63},{46,64},{62,64}},
       color={95,95,95},
       thickness=0.5));
-  connect(K1.frame_b, revolute4.frame_b) annotation (Line(
-      points={{144,-14},{150,-14},{150,15},{108,15}},
+  connect(world.frame_b, revolute1.frame_a) annotation (Line(
+      points={{90,-26},{98,-26},{98,-17},{106,-17}},
       color={95,95,95},
       thickness=0.5));
-  connect(K1.frame_a, revolute5.frame_b) annotation (Line(
-      points={{124,-14},{120,-14},{120,-19},{112,-19}},
+  connect(K1.frame_a, revolute1.frame_b) annotation (Line(
+      points={{124,-14},{120,-14},{120,-17},{116,-17}},
       color={95,95,95},
       thickness=0.5));
-  connect(world.frame_b, revolute5.frame_a) annotation (Line(
-      points={{90,-26},{96,-26},{96,-19},{102,-19}},
+  connect(K1.frame_b, revolute3.frame_a) annotation (Line(
+      points={{144,-14},{148,-14},{148,2},{151,2}},
+      color={95,95,95},
+      thickness=0.5));
+  connect(K2.frame_b, revolute3.frame_b) annotation (Line(
+      points={{136,24},{140,24},{140,12},{151,12}},
+      color={95,95,95},
+      thickness=0.5));
+  connect(K3.frame_b, revolute4.frame_a) annotation (Line(
+      points={{82,64},{92,64},{92,23},{100,23}},
+      color={95,95,95},
+      thickness=0.5));
+  connect(K2.frame_a, revolute4.frame_b) annotation (Line(
+      points={{116,24},{110,23}},
+      color={95,95,95},
+      thickness=0.5));
+  connect(revolute5.frame_a, revolute2.frame_b) annotation (Line(
+      points={{74,23},{74,14},{68,14},{24,14},{24,13}},
+      color={95,95,95},
+      thickness=0.5));
+  connect(revolute5.frame_b, revolute4.frame_a) annotation (Line(
+      points={{84,23},{86,23},{100,23}},
+      color={95,95,95},
+      thickness=0.5));
+  connect(OC.frame_a, world.frame_b) annotation (Line(
+      points={{170,14},{170,14},{170,-26},{90,-26}},
+      color={95,95,95},
+      thickness=0.5));
+  connect(OC.frame_b, spring.frame_b) annotation (Line(
+      points={{170,34},{170,34},{170,90},{144,90}},
+      color={95,95,95},
+      thickness=0.5));
+  connect(K3.frame_a, BD.frame_a) annotation (Line(
+      points={{62,64},{62,76},{63,76}},
+      color={95,95,95},
+      thickness=0.5));
+  connect(spring.frame_a, BD.frame_b) annotation (Line(
+      points={{124,90},{63,90}},
       color={95,95,95},
       thickness=0.5));
   annotation (
     Icon(coordinateSystem(preserveAspectRatio=false)),
     Diagram(coordinateSystem(preserveAspectRatio=false)),
     uses(Modelica(version="3.2.2")));
-
-
 end Squeezer;
