@@ -57,7 +57,10 @@ if ier!=1:
     print(mesg)
 print('Nunber of function evaluations:', dict['nfev'])
 #print('Number of jacobian evaluations:', dict['njev'])
-print('q:', q)
-
 modRes=mod(q,2*pi)
 modKey=mod(key,2*pi)
+print('q modulus 2*pi:', modRes)
+
+print('Resulting initial values close to key:',allclose(modRes,modKey))
+
+print('Resulting initial values consistent:', allclose(zeros((1,7)),initialVal(q)))
