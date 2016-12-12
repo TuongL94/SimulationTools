@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Dec 11 17:35:45 2016
+
+@author: anders
+"""
+from numpy import*
+#import pylab
+from scipy import optimize
+
+
+
+
+def initialVal(q):
+    '''
+    Function that defines the constraints
+    '''
+    rr=0.007
+    d=0.028
+    ss=0.035
+    xb=-0.03635
+    yb=0.03273
+    e=0.02
+    zt=0.04
+    xa=-0.06934
+    ya=-0.00227
+    zf=0.02
+    u=0.04
+    
+    q[1]=0.0 #Set one arbitrary constraint variable to zero
+    
+    r2=q[1]
+    
+    r1=rr*cos(q[0])-d*cos(q[0]+q[1])-ss*sin(q[2])-xb
+    r3=rr*sin(q[0])-d*sin(q[0]+q[1])+ss*cos(q[2])-yb
+    r4=rr*cos(q[0])-d*cos(q[0]+q[1])-e*sin(q[3]+q[4])-zt*cos(q[4])-xa
+    r5=rr*sin(q[0])-d*sin(q[0]+q[1])+e*cos(q[3]+q[4])-zt*sin(q[4])-ya
+    r6=rr*cos(q[0])-d*cos(q[0]+q[1])-zf*cos(q[5]+q[6])-u*sin(q[6])-xa
+    r7=rr*sin(q[0])-d*sin(q[0]+q[1])-zf*sin(q[5]+q[6])+u*cos(q[6])-ya
+
+    r=array([r1,r2,r3,r4,r5,r6,r7])
+
+    return r
+
+startGuess=array([10.,10,10,10,10,10,10]) #Random starting angels
+
+key=array([-0.0617138900142764496358948458001,  #  beta
+				0.,                                 #  theta
+				0.455279819163070380255912382449,   # gamma
+				0.222668390165885884674473185609,   # phi
+				0.487364979543842550225598953530,   # delta
+				-0.222668390165885884674473185609,  # Omega
+				1.23054744454982119249735015568]) 
+q,dict,ier,mesg=scipy.optimize.fsolve(initialVal,startGuess,full_output=True,xtol=1e-10)
+if ier!=1:
+    print(mesg)
+print('Nunber of function evaluations:', dict['nfev'])
+#print('Number of jacobian evaluations:', dict['njev'])
+print('q:', q)
+
+modRes=mod(q,2*pi)
+modKey=mod(key,2*pi)
