@@ -203,8 +203,8 @@ model Squeezer
     annotation (Placement(transformation(extent={{76,-74},{96,-54}})));
   Modelica.Mechanics.Rotational.Components.Fixed fixed
     annotation (Placement(transformation(extent={{76,-98},{96,-78}})));
-  Modelica.Mechanics.MultiBody.Joints.Revolute revolute6(phi(fixed=false, start
-        =4.7123889803847))
+  Modelica.Mechanics.MultiBody.Joints.Revolute revolute6(phi(fixed=false, start=
+         4.7123889803847))
     annotation (Placement(transformation(extent={{-46,8},{-36,18}})));
   Modelica.Mechanics.MultiBody.Joints.RevolutePlanarLoopConstraint K4_K2
     annotation (Placement(transformation(extent={{30,6},{40,16}})));
@@ -287,10 +287,6 @@ equation
           {104,-12},{104,-64},{96,-64}}, color={0,0,0}));
   connect(constantTorque.support, fixed.flange)
     annotation (Line(points={{86,-74},{86,-88}}, color={0,0,0}));
-  annotation (
-    Icon(coordinateSystem(preserveAspectRatio=false)),
-    Diagram(coordinateSystem(preserveAspectRatio=false)),
-    uses(Modelica(version="3.2.2")));
 
 algorithm 
 
@@ -298,11 +294,12 @@ algorithm
 
   beta := revolute1.phi;
   Theta := revolute3.phi;
-  gamma := -B.phi;
-  Phi := 7*PI/2 - revolute6.phi;
+  gamma := B.phi + PI/2;
+  Phi := revolute6.phi - 3*PI/2;
   Omega :=   K6_K7.phi - PI/2;
   epsilon := A.phi + PI/2;
   delta := A1.phi;
+
 
 
 
@@ -340,4 +337,8 @@ equation
       points={{-46,13},{-54,13},{-54,14},{-62,14}},
       color={95,95,95},
       thickness=0.5));
+  annotation (
+    Icon(coordinateSystem(preserveAspectRatio=false)),
+    Diagram(coordinateSystem(preserveAspectRatio=false)),
+    uses(Modelica(version="3.2.2")));
 end Squeezer;
