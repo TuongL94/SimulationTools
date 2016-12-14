@@ -159,7 +159,9 @@ tfinal = 0.03       #Specify the final time
 t,y = sim.simulate(tfinal)
 
 #sim.show()
-plot(t,y[:,0:7])
+figure()
+plot(t,y[:,0:7]%(2*pi))
+axis([t0, tfinal, -0.8, 0.8]) # zoom in to cf. w/ ref. (optional)
 #figure
 #plot(t,y[:,14:24])
 lamint = y[:,14:21]
