@@ -5,14 +5,17 @@ model Squeezer
 
   constant Real PI = Modelica.Constants.pi;
   Real beta(start = 0.0);
+  Real betaMod(start = 0.0);
   //   Real Theta(start = 0.0, fixed=true);
   Real Theta(start = 0.0);
+  Real ThetaMod(start = 0.0);
   Real gamma(start = 0.0);
   Real Phi(start = 0.0);
   Real delta(start = 0.0);
   Real Omega(start = 0.0);
   Real epsilon(start = 0.0);
 
+  Real constraintForce[6];
 
   // Ledernas positioner
   constant Real xa = -0.06934;
@@ -293,7 +296,9 @@ algorithm
   // Alla vinklar uttrycks i radianer
 
   beta := revolute1.phi;
+  betaMod := mod(beta+PI,2*PI) - PI;
   Theta := revolute3.phi;
+  ThetaMod := mod(Theta+PI,2*PI) - PI;
   gamma := B.phi + PI/2;
   Phi := revolute6.phi - 3*PI/2;
   Omega :=   K6_K7.phi - PI/2;
@@ -301,8 +306,9 @@ algorithm
   delta := A1.phi;
 
 
-
-
+  constraintForce[1:2] := B.frame_b.f[1:2];
+  constraintForce[3:4] := A1.frame_b.f[1:2];
+  constraintForce[5:6] := A.frame_b.f[1:2];
 
 equation 
   connect(K6.frame_b, revolute2.frame_a) annotation (Line(
