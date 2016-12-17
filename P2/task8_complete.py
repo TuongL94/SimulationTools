@@ -3,25 +3,29 @@
 Created on Tue Dec 13 16:55:29 2016
 @author: Jonathan
 """
-from scipy import *
-from numpy import *
+#from scipy import *
+#from numpy import *
+#import scipy as S
+import numpy as N
 from assimulo.problem import Explicit_Problem
-from assimulo.solvers import RungeKutta34
+#from assimulo.solvers import RungeKutta34
 from assimulo.solvers import Dopri5
-from assimulo.solvers import RungeKutta4
+#from assimulo.solvers import RungeKutta4
+import matplotlib.pyplot as P
+#import matplotlib.patches as patch # for setting other legend markers (optional)
 
 def init_y():
-    y_1 = array([-0.0617138900142764496358948458001,  #  beta
+    y_1 = N.array([-0.0617138900142764496358948458001,  #  beta
                  0.,                                 #  theta
                  0.455279819163070380255912382449,   # gamma
                  0.222668390165885884674473185609,   # phi
                  0.487364979543842550225598953530,   # delta
                  -0.222668390165885884674473185609,  # Omega
                  1.23054744454982119249735015568])   #epsilon
-    lamb = array([
+    lamb = N.array([
                   98.5668703962410896057654982170,        # lambda[0]
                  -6.12268834425566265503114393122])       # lambda[1]			
-    y=hstack((y_1,zeros((7,)),lamb,zeros((4,))))
+    y=N.hstack((y_1,N.zeros((7,)),lamb,N.zeros((4,))))
     return y
 
 def rhs(t, y):
@@ -54,16 +58,16 @@ def rhs(t, y):
     beta,theta,gamma,phi,delta,omega,epsilon=y[0:7]
     bep,thp,gap,php,dep,omp,epp=y[7:14]
     lamb=y[14:20]
-    sibe,sith,siga,siph,side,siom,siep=sin(y[0:7])
-    cobe,coth,coga,coph,code,coom,coep=cos(y[0:7])
+    sibe,sith,siga,siph,side,siom,siep=N.sin(y[0:7])
+    cobe,coth,coga,coph,code,coom,coep=N.cos(y[0:7])
 	
-    sibeth = sin(beta+theta);cobeth = cos(beta+theta)
-    siphde = sin(phi+delta);cophde = cos(phi+delta)
-    siomep = sin(omega+epsilon);coomep = cos(omega+epsilon)
+    sibeth = N.sin(beta+theta);cobeth = N.cos(beta+theta)
+    siphde = N.sin(phi+delta);cophde = N.cos(phi+delta)
+    siomep = N.sin(omega+epsilon);coomep = N.cos(omega+epsilon)
 
 
     # Mass matrix
-    m=zeros((7,7))
+    m=N.zeros((7,7))
     m[0,0] = m1*ra**2 + m2*(rr**2-2*da*rr*coth+da**2) + i1 + i2
     m[1,0] = m[0,1] = m2*(da**2-da*rr*coth) + i2
     m[1,1] = m2*da**2 + i2
@@ -79,11 +83,11 @@ def rhs(t, y):
 
     xd = sd*coga + sc*siga + xb
     yd = sd*siga - sc*coga + yb
-    lang  = sqrt ((xd-xc)**2 + (yd-yc)**2)
+    lang  = N.sqrt ((xd-xc)**2 + (yd-yc)**2)
     force = - c0 * (lang - lo)/lang
     fx = force * (xd-xc)
     fy = force * (yd-yc)
-    ff=array([
+    ff=N.array([
            mom - m2*da*rr*thp*(thp+2*bep)*sith,	
         m2*da*rr*bep**2*sith,
         fx*(sc*coga - sd*siga) + fy*(sd*coga + sc*siga),
@@ -94,7 +98,7 @@ def rhs(t, y):
 
     #  constraint matrix  G
 
-    gp=zeros((6,7))
+    gp=N.zeros((6,7))
 
     gp[0,0] = - rr*sibe + d*sibeth
     gp[0,1] = d*sibeth
@@ -121,7 +125,7 @@ def rhs(t, y):
     #	Index-1 constraints
     # call it gpp or gqq
     v = y[7:14]
-    gpp=zeros((6,))
+    gpp=N.zeros((6,))
     gpp[0] = -rr*cobe*v[0]**2 + d*cobeth*(v[0]+v[1])**2 + ss*siga*v[2]**2
     gpp[1] = -rr*sibe*v[0]**2 + d*sibeth*(v[0]+v[1])**2 - ss*coga*v[2]**2
     gpp[2] = -rr*cobe*v[0]**2 + d*cobeth*(v[0]+v[1])**2 + e*siphde*(v[3]+v[4])**2 + zt*code*v[4]**2
@@ -131,15 +135,15 @@ def rhs(t, y):
 
 
     # solve the linear system for w and lambda
-    a = asarray(bmat([[m,gp.T],[gp,zeros((6,6))]]))
-    b = hstack((ff,-gpp))
-    x = solve(a, b)
+    a = N.asarray(N.bmat([[m,gp.T],[gp,N.zeros((6,6))]]))
+    b = N.hstack((ff,-gpp))
+    x = N.linalg.solve(a, b)
     w = x[0:7]
     lam = x[7:13]
     
     # insert in a) and b)
-    lamdot = (lam-y[14:20])/2 # 1st order approx ??
-    yd = hstack((v,w,lam))
+#    lamdot = (lam-y[14:20])/2 # 1st order approx ??
+    yd = N.hstack((v,w,lam))
     
     return yd
 
@@ -159,17 +163,25 @@ tfinal = 0.03       #Specify the final time
 t,y = sim.simulate(tfinal)
 
 #sim.show()
-figure()
-plot(t,y[:,0:7]%(2*pi))
-axis([t0, tfinal, -0.8, 0.8]) # zoom in to cf. w/ ref. (optional)
+P.figure()
+P.plot(t,(y[:,0:7]+N.pi)%(2*N.pi)-N.pi)
+P.axis([t0, tfinal, -0.8, 0.8]) # zoom in to cf. w/ ref. (optional)
 #figure
 #plot(t,y[:,14:24])
 lamint = y[:,14:21]
-tup = shape(lamint)
+tup = N.shape(lamint)
 tup = tuple([tup[0]-1,tup[1]])
-lam = zeros(tup)
+lam = N.zeros(tup)
 #t2 = zeros(size(t)-1)
-for i in range(shape(lam)[0]):
+for i in range(N.shape(lam)[0]):
     lam[i,:] = (lamint[i+1,:]-lamint[i,:]) / (t[i+1] - t[i])
-figure()
-plot(t[1:],lam)
+P.figure()
+P.plot(t[1:],lam)
+P.title('Lagrange multipliers index-1 problem')
+P.xlim((t0,tfinal))
+P.xlabel('Time (s)')
+#patches = patch.Patch(...) # use this is if you want customized legend markers
+P.legend(['$\lambda_1$','$\lambda_2$','$\lambda_3$',
+          '$\lambda_4$','$\lambda_5$','$\lambda_6$']
+          ,loc='lower center',ncol=6,columnspacing = 0.5)
+P.savefig('lagrange_index1.eps')
