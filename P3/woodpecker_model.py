@@ -89,7 +89,8 @@ def res(t,y,yd,sw):
         wT[0] = 1
         wT[1] = lS
         wT[2] = lG-lB
-        g = 0 # Index-3 constraint
+        g = 0
+        f = 0
 
     # State 2
     if sw[1]:
@@ -98,6 +99,7 @@ def res(t,y,yd,sw):
         wT[1] = rS
         wT[2] = 0
         g = (rS-r0) + hS*phiS # Index-3 constraint
+        f = v[0] + rS*v[1]
 
     # State 3
     if sw[2]:
@@ -106,12 +108,14 @@ def res(t,y,yd,sw):
         wT[1] = rS
         wT[2] = 0
         g = (rS-r0) - hS*phiS # Index-3 constraint
+        f = v[0] + rS*v[1]
 
     # State 4 - never occurs since handle_event immediately sends it back to 3
         
     # Calculate residual
-    res_1 = v - qd
-    res_2 = N.dot(M,w) - h - wN*lam[0] - wT*lam[1]
-    res_3 = g
+    res1 = v - qd
+    res2 = N.dot(M,w) - h - wN*lam[0] - wT*lam[1]
+    res3 = g
+    res4 = f
     
-    return N.array(len(y))
+    return N.hstack((res1,res2,res3,res4)) # len(y)
