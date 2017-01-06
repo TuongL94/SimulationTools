@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Wed Dec 28 14:15:39 2016
@@ -13,7 +14,9 @@ def init_woodpecker():
     lamd = N.zeros((2,))
     
 #    qdd[0] = -9.81
-    qd[1] = -1
+    qd[2] = -2 #Bird has initial velocity
+#    q[1]=0.1
+#    q[2]=-3/4 #Bird has initial position
     y = N.hstack((q,qd,lam))
     yd = N.hstack((qd,qdd,lamd))
     
@@ -51,7 +54,8 @@ def res(t,y,yd,sw):
     JB = 7.0e-7 # Moment of inertia of bird [kgm]
     r0 = 2.5e-3 # Radius of the bar [m]
     rS = 3.1e-3 # Inner Radius of sleeve [m]
-    hS = 5.8e-3 # 1/2 height of sleeve [m]
+    #hS = 5.8e-3 # 1/2 height of sleeve [m]
+    hS=2.0e-2
     lS = 1.0e-2 # verical distance sleeve origin to spring origin [m]
     lG = 1.5e-2 # vertical distance spring origin to bird origin [m]
     hB = 2.0e-2 # y coordinate beak (in bird coordinate system) [m]
@@ -65,7 +69,7 @@ def res(t,y,yd,sw):
     M[0,1] = mB*lS
     M[0,2] = mB*lG
     M[1,0] = M[0,1]
-    M[1,1] = JB + mB*(lS**2)
+    M[1,1] = JS + mB*(lS**2)
     M[1,2] = mB*lS*lG
     M[2,0] = M[0,2]
     M[2,1] = M[1,2]
@@ -104,6 +108,7 @@ def res(t,y,yd,sw):
         wT[1] = -rS
         wT[2] = 0
         gc = (rS-r0) + hS*phiS # Index-3 constraint
+#        gc = hS*qd[1] # Index-2 constraint
         f = v[0] + rS*v[1]
 
     # State 3
@@ -113,6 +118,7 @@ def res(t,y,yd,sw):
         wT[1] = -rS
         wT[2] = 0
         gc = (rS-r0) - hS*phiS # Index-3 constraint
+#        gc = -hS*qd[1] # Index-2 constraint
         f = v[0] + rS*v[1]
 
     # State 4 - never occurs since handle_event immediately sends it back to 3
@@ -124,3 +130,4 @@ def res(t,y,yd,sw):
     res4 = f
     
     return N.hstack((res1,res2,res3,res4)) # len(y)
+

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Dec 17 18:14:23 2016
-
 @author: anders
 """
 import numpy as N
@@ -14,16 +13,20 @@ def handle_event(solver,event_info):
     specified by the event functions.
     """
     state_info=event_info[0] #We are only interested in state events
-    print(event_info)
+    #print(event_info)
     '''
     Event 1 occurs
     '''
     if state_info[0] !=0:
         if solver.sw[0] ==True: #Currently in State 1
-            #raise StateError('Event occured when it was not allowed')
+            
             if solver.y[5]<0: # Bird rotates in the right direction
                 change_momentum(solver)
                 solver.sw=[False,True,False] #Transistion from state 1 to 2
+                print('1 to 2')
+                
+        #if solver.sw[0] ==False:
+         #   raise StateError('Event occured when it was not allowed')
     '''
     Event 2 occurs
     '''
@@ -33,6 +36,7 @@ def handle_event(solver,event_info):
             if solver.y[5]>0: #Bird rotates in the right direction
                 change_momentum(solver)
                 solver.sw=[False,False,True] #Transition from state 1 to 3
+                print('1 to 3')
         
     '''
     Event 3 occurs
@@ -40,7 +44,8 @@ def handle_event(solver,event_info):
     if state_info[2] !=0:
         if solver.sw[1] ==True: #Currently in state 2
             #raise StateError('Event occured when it was not allowed')
-            solver.sw=[True,False,False] #Transition to state 1
+            solver.sw=[True,False,False] #Transition from state 2 to 1
+            print('2 to 1')
         
     '''
     Event 4 occurs
@@ -49,7 +54,8 @@ def handle_event(solver,event_info):
         if solver.sw[2] ==True: #Currently in state 3
             #raise StateError('Event occured when it was not allowed')
             if solver.y[5]<0: #Bird rotates in the right direction
-                solver.sw=[True,False,False] #Transition to state 1
+                solver.sw=[True,False,False] #Transition from state 3 to 1
+                print('3 to 1')
     
     '''
     Event 5 occurs
@@ -59,6 +65,7 @@ def handle_event(solver,event_info):
             #raise StateError('Event occured when it was not allowed')
             if solver.y[5]>0: #Bird rotates in the right direction
                 solver.y[5]=-solver.y[5] # Bird hits the bar, changes rotation direction without losses
+                print('Hits the bar')
                           
     '''
     Event 6 occurs, i.e. the woodpecker hits the bar. Don't need this?
@@ -89,7 +96,8 @@ def change_momentum(solver):
     JB = 7.0e-7 # Moment of inertia of bird [kgm]
     r0 = 2.5e-3 # Radius of the bar [m]
     rS = 3.1e-3 # Inner Radius of sleeve [m]
-    hS = 5.8e-3 # 1/2 height of sleeve [m]
+    #hS = 5.8e-3 # 1/2 height of sleeve [m]
+    hS=2.0e-2
     lS = 1.0e-2 # verical distance sleeve origin to spring origin [m]
     lG = 1.5e-2 # vertical distance spring origin to bird origin [m]
     hB = 2.0e-2 # y coordinate beak (in bird coordinate system) [m]
@@ -104,3 +112,4 @@ def change_momentum(solver):
     
 class StateError(Exception):
     pass
+

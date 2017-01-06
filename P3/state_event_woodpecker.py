@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Dec 22 17:00:54 2016
-
 @author: anders
 """
 import numpy as N
@@ -25,7 +24,8 @@ def state_event(t,y,yd,sw):
     JB = 7.0e-7 # Moment of inertia of bird [kgm]
     r0 = 2.5e-3 # Radius of the bar [m]
     rS = 3.1e-3 # Inner Radius of sleeve [m]
-    hS = 5.8e-3 # 1/2 height of sleeve [m]
+    #hS = 5.8e-3 # 1/2 height of sleeve [m]
+    hS=2.0e-2
     lS = 1.0e-2 # verical distance sleeve origin to spring origin [m]
     lG = 1.5e-2 # vertical distance spring origin to bird origin [m]
     hB = 2.0e-2 # y coordinate beak (in bird coordinate system) [m]
@@ -37,7 +37,7 @@ def state_event(t,y,yd,sw):
     phiS=y[1]
     R1=hS*phiS+(rS-r0)
     
-    #FUnction 2, transition from State 1 to 3
+    #Function 2, transition from State 1 to 3
     phiS=y[1]
     R2=hS*phiS-(rS-r0)
     
@@ -54,3 +54,4 @@ def state_event(t,y,yd,sw):
     
     return N.array([R1,R2,R3,R4,R5])
     
+
