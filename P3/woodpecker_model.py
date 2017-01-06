@@ -12,16 +12,19 @@ def init_woodpecker():
     lam = N.zeros((2,))
     lamd = N.zeros((2,))
     
+#    qdd[0] = -9.81
+    qd[1] = -1
     y = N.hstack((q,qd,lam))
     yd = N.hstack((qd,qdd,lamd))
     
-    sw0 = N.array([True,False,False])
+    sw0 = [True,False,False]
     
     return y,yd,sw0
 
 
 def res(t,y,yd,sw):
-    
+#    sw = N.array([False,True,False])
+#    print(sw)
     # Variable alisases
     q = y[0:3]
     qd = y[3:6]
@@ -85,37 +88,39 @@ def res(t,y,yd,sw):
     
     # State 1
     if sw[0]:
-        wN[2] = -hB
-        wT[0] = 1
-        wT[1] = lS
-        wT[2] = lG-lB
-        g = 0
-        f = 0
+#        wN[2] = -hB
+#        wT[0] = 1
+#        wT[1] = lS
+#        wT[2] = lG-lB
+        wN[1] = -1
+        wT[2] = -1
+        gc = lam[0]
+        f = lam[1]
 
     # State 2
     if sw[1]:
-        wN[1] = hS
-        wT[0] = 1
-        wT[1] = rS
+        wN[1] = -hS
+        wT[0] = -1
+        wT[1] = -rS
         wT[2] = 0
-        g = (rS-r0) + hS*phiS # Index-3 constraint
+        gc = (rS-r0) + hS*phiS # Index-3 constraint
         f = v[0] + rS*v[1]
 
     # State 3
     if sw[2]:
-        wN[1] = -hS
-        wT[0] = 1
-        wT[1] = rS
+        wN[1] = hS
+        wT[0] = -1
+        wT[1] = -rS
         wT[2] = 0
-        g = (rS-r0) - hS*phiS # Index-3 constraint
+        gc = (rS-r0) - hS*phiS # Index-3 constraint
         f = v[0] + rS*v[1]
 
     # State 4 - never occurs since handle_event immediately sends it back to 3
         
-    # Calculate residual
+    # Calculate residuals
     res1 = v - qd
     res2 = N.dot(M,w) - h - wN*lam[0] - wT*lam[1]
-    res3 = g
+    res3 = gc
     res4 = f
     
     return N.hstack((res1,res2,res3,res4)) # len(y)
