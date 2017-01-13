@@ -1,8 +1,15 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jan  4 20:42:44 2017
 @author: Jonathan
+
+********************************
+
+        Main program - Only need to run this!
+
+********************************
+
+
 """
 from woodpecker_model import init_woodpecker
 from woodpecker_model import res
@@ -24,11 +31,19 @@ model.handle_event = handle_event
 sim = IDA(model)
 sim.algvar = [1, 1, 1, 0, 0, 0, 0, 0]
 sim.suppress_alg = True
-#sim.atol = [1e-5,1e-5,1e-5,1e15,1e15,1e15,1e15,1e15]
+sim.atol = [1e-5,1e-5,1e-5,1e15,1e15,1e15,1e15,1e15]
+#sim.verbosity = 10
 
-tfinal = 0.5
+tfinal = 0.25
 t,y,yd = sim.simulate(tfinal)
 
+"""
+    Plotting
+    
+    y[:,0] - plots z (height)
+    y[:,1] - plots sleeve angle
+    y[:,2] - plots bird angle
+    
+"""
 P.plot(t,y[:,1])
-sim.print_event_data()
-
+#sim.print_event_data()
