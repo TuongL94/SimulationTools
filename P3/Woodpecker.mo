@@ -1,4 +1,4 @@
-model Woodpecker_splitEq
+model Woodpecker_splitEqRestored2
 
   // test: lambda1 och 2 till "protected"
 
@@ -20,9 +20,9 @@ model Woodpecker_splitEq
   discrete Integer state(start = 1, fixed = true);
 
   Real phi_S(start = 0.00, unit="rad");
-  Real phi_S_dot(start = .5, unit="rad/s", fixed=true);
-  Real phi_B(start = 0, unit="rad");
-  Real phi_B_dot(start = .0,unit="rad/s");
+  Real phi_S_dot(start = 0.5,unit="rad/s", fixed=true);
+  Real phi_B(start = 0, unit="rad",fixed=true);
+  Real phi_B_dot(start = 0.0,unit="rad/s");
   Real z(start = 0, unit="m", fixed=true);
   Real z_dot(start = 0, unit="m/s");
 
@@ -33,14 +33,12 @@ model Woodpecker_splitEq
   Real testcond2(start = 0);
   Real testcond3(start = 0);
   Real testcond4(start = 0);
-  
-  
 
-  Real lambda_1(start = 0.0,fixed=true);
-  Real lambda_2(start = 0.0,fixed=true);
-  
+  Real lambda_1(start = 0.0);
+  Real lambda_2(start = 0.0);
+
   discrete Integer nbrOfBeakHits(start = 0);
-  
+
   function momentum
     input Real zd;
     input Real phiSd;
@@ -59,38 +57,41 @@ model Woodpecker_splitEq
 
 //  Real mom_pre;
 
-protected 
-  
 equation 
   der(phi_S) = phi_S_dot;
   der(phi_B) = phi_B_dot;
   der(z) = z_dot;
-  
+
   if state == 1 then // lambda_1 = lambda_2 = 0
-  
-  
+
   (m_S + m_B)*der(z_dot) + m_B*l_S*der(phi_S_dot) + m_B*l_G*der(phi_B_dot) = -(m_S+m_B)*g; // 1a
-  m_B*l_S*der(z_dot) +( J_S + m_B*l_S^2)*der(phi_S_dot) + m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g; //2a
-  m_B*l_G*der(z_dot) + m_B*l_S*l_G*der(phi_S_dot) +( J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g; //3a
+  m_B*l_S*der(z_dot) +( J_S + m_B*l_S^2)*der(phi_S_dot) + m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g - lambda_1*h_S; //1b
+  //m_B*l_S*der(z_dot) +( J_S + m_B*l_S^2)*der(phi_S_dot) + m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g; //1b
+  m_B*l_G*der(z_dot) + m_B*l_S*l_G*der(phi_S_dot) +( J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g - lambda_2*r_S; //1c
+  //m_B*l_G*der(z_dot) + m_B*l_S*l_G*der(phi_S_dot) +( J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g; //1c
     0.0 = lambda_1;  //1d
     0.0 = lambda_2; //1e
   else // z_dot = phi_S_dot = 0
-        
-    m_B*l_G*der(phi_B_dot) = -(m_S+m_B)*g - lambda_2; // 2-3a
+
+    //m_B*l_G*der(phi_B_dot) = -(m_S+m_B)*g - lambda_2; // 2-3a
+    (m_S + m_B)*der(z_dot) + m_B*l_S*der(phi_S_dot) + m_B*l_G*der(phi_B_dot) = -(m_S+m_B)*g - lambda_2; // 2-3a
     if state == 2 then
-      // m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g + lambda_1*h_S - lambda_2*r_S;// 2b
-      m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - (r_0-r_S)/h_S) - m_B*l_S*g + lambda_1*h_S - lambda_2*r_S;// 2b
-      (J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*((r_0-r_S)/h_S - phi_B) - m_B*l_G*g; //2c
-      phi_S = (r_0-r_S)/h_S;// 0 = (r_S-r_0) + h_S*phi_S;
+      // m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g . lambda_1*h_S - lambda_2*r_S;// 2b
+      m_B*l_S*der(z_dot) +( J_S + m_B*l_S^2)*der(phi_S_dot) + m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g - lambda_1*h_S - lambda_2*r_S;// 2b
+      //(J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g; //2c
+      m_B*l_G*der(z_dot) + m_B*l_S*l_G*der(phi_S_dot) +(J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g; //2c
+      //phi_S = (r_0-r_S)/h_S;// 0 = (r_S-r_0) + h_S*phi_S;
     else
-      // m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g - lambda_1*h_S - lambda_2*r_S;// 3b
-      m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g - lambda_1*h_S - lambda_2*r_S;// 3b
-      (J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*((r_S-r_0)/h_S - phi_B) - m_B*l_G*g; //3c
-      phi_S = (r_S-r_0)/h_S; //0 = (r_S-r_0) - h_S*phi_S;
+      // m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g + lambda_1*h_S - lambda_2*r_S;// 3b
+      m_B*l_S*der(z_dot) +( J_S + m_B*l_S^2)*der(phi_S_dot) + m_B*l_S*l_G*der(phi_B_dot) = c_p*(phi_B - phi_S) - m_B*l_S*g + lambda_1*h_S - lambda_2*r_S;// 3b
+      //(J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g; //3c
+      m_B*l_G*der(z_dot) + m_B*l_S*l_G*der(phi_S_dot) +(J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g; //3c
+      //phi_S = (r_S-r_0)/h_S; //0 = (r_S-r_0) - h_S*phi_S;
     end if;
-    //0.0 = phi_S_dot;
+    0.0 = phi_S_dot; //2-3d deriverad två ggr
     //(J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g;
-    0.0 = z_dot;//2-3e
+    //0.0 = z_dot;//2-3e
+    0.0 = der(z_dot) + r_S*der(phi_S_dot); // 2-3e deriverad en gg
   end if;
   //1-3c //Här har lagts till en faktor r_S före lambda_2 då det i annat fall blir dimensionsfel
   // Spelar eventuellt inte ngn större roll eftersom lambda_2 ska vara noll
@@ -100,12 +101,6 @@ equation
   //when state == 4 then
     //reinit(phi_B_dot,-pre(phi_B_dot));
   //end when;
-
-  when sleeveBlocking then
-    reinit(z_dot,0);
-    reinit(phi_S_dot,0);
-    reinit(phi_B_dot, pre(mom_pre)/(J_B+m_B*l_G^2));
-  end when;
 
 algorithm 
 
@@ -159,7 +154,10 @@ algorithm
   end when;
 
   when sleeveBlocking then
+    reinit(z_dot,0);
+    reinit(phi_S_dot,0);
+    reinit(phi_B_dot, pre(mom_pre)/(J_B+m_B*l_G^2));
     sleeveBlocking :=false;
   end when;
 
-end Woodpecker_splitEq;
+end Woodpecker_splitEqRestored2;
