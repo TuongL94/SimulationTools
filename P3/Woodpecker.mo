@@ -22,7 +22,7 @@ model Woodpecker_splitEqRestored2
   Real phi_S(start = 0.00, unit="rad");
   Real phi_S_dot(start = 0.5,unit="rad/s", fixed=true);
   Real phi_B(start = 0, unit="rad",fixed=true);
-  Real phi_B_dot(start = 0.0,unit="rad/s");
+  Real phi_B_dot(start = 0.5,unit="rad/s");
   Real z(start = 0, unit="m", fixed=true);
   Real z_dot(start = 0, unit="m/s");
 
@@ -88,7 +88,7 @@ equation
       m_B*l_G*der(z_dot) + m_B*l_S*l_G*der(phi_S_dot) +(J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g; //3c
       //phi_S = (r_S-r_0)/h_S; //0 = (r_S-r_0) - h_S*phi_S;
     end if;
-    0.0 = phi_S_dot; //2-3d deriverad två ggr
+    0.0 = der(phi_S_dot); //2-3d deriverad två ggr
     //(J_B + m_B*l_G^2)*der(phi_B_dot) = c_p*(phi_S - phi_B) - m_B*l_G*g;
     //0.0 = z_dot;//2-3e
     0.0 = der(z_dot) + r_S*der(phi_S_dot); // 2-3e deriverad en gg
@@ -110,13 +110,25 @@ algorithm
   testcond4 := h_B*phi_B - (l_S + l_G - l_B - r_0);
 
   when h_S*phi_S < -(r_S - r_0) then
-    if state == 1 then
+    if state == 1 and phi_B_dot < 0 then
+      state := 2;
+    end if;
+  end when;
+  
+  when h_S*phi_S > -(r_S - r_0) then
+    if state == 1 and phi_B_dot < 0 then
       state := 2;
     end if;
   end when;
 
   when h_S*phi_S > (r_S - r_0) then
-    if state == 1 then
+    if state == 1 and phi_B_dot > 0 then
+      state := 3;
+    end if;
+  end when;
+
+  when h_S*phi_S < (r_S - r_0) then
+    if state == 1 and phi_B_dot > 0 then
       state := 3;
     end if;
   end when;
