@@ -3,16 +3,12 @@
 """
 Created on Sat Dec 17 18:14:23 2016
 
-@author: anders
+@author: Jonathan Astermark, Anders Hansson, Tuong Lam and Oskar Smedman
 
 *****************************
-
     Handles events
-
 *****************************
 """
-import numpy as N
-
 
 def handle_event(solver,event_info):
     """
@@ -20,7 +16,6 @@ def handle_event(solver,event_info):
     specified by the event functions.
     """
     state_info=event_info[0] #We are only interested in state events
-#    print(event_info)
     '''
     Event 1 occurs - transition from state 1 to 2
     '''
@@ -67,8 +62,9 @@ def handle_event(solver,event_info):
     if state_info[3] !=0:
         if solver.sw[2] ==True: #Currently in state 3
             #raise StateError('Event occured when it was not allowed')
-            #if solver.y[5]>0: #Bird rotates in the right direction
+            if solver.y[5]>0: #Bird rotates in the right direction
                 solver.y[5]=-solver.y[5] # Bird hits the bar, changes rotation direction without losses
+
 
 def change_momentum(solver):
     '''

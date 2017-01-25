@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jan  4 20:42:44 2017
-@author: Jonathan
+@author: Jonathan Astermark, Anders Hansson, Tuong Lam and Oskar Smedman
 ********************************
-        Main program - Only need to run this!
+    Main program - Only need to run this!
 ********************************
 """
 from woodpecker_model import init_woodpecker
@@ -16,6 +16,7 @@ import numpy as N
 import matplotlib.pyplot as P
 
 t0 = 0.0
+tfinal = 2.0
 y0,yd0,switches0 = init_woodpecker()
 
 model = Implicit_Problem(res,y0,yd0,t0,sw0=switches0)
@@ -26,8 +27,6 @@ sim = IDA(model)
 sim.algvar = [1, 1, 1, 0, 0, 0, 0, 0]
 sim.suppress_alg = True
 sim.atol = [1e-5,1e-5,1e-5,1e15,1e15,1e15,1e15,1e15]
-
-tfinal = 2.0
 t,y,yd = sim.simulate(tfinal)
 
 """
@@ -36,7 +35,6 @@ t,y,yd = sim.simulate(tfinal)
     y[:,0] - plots z (height)
     y[:,1] - plots sleeve angle
     y[:,2] - plots bird angle
-
 """
 P.plot(t,y[:,0])
 P.show()

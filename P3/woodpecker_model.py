@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Dec 28 14:15:39 2016
-@author: Jonathan
+@author: Jonathan Astermark, Anders Hansson, Tuong Lam and Oskar Smedman
 ***********************
     Sets initial values and defines the equations of motion
 
@@ -43,8 +43,6 @@ def init_woodpecker():
 
 
 def res(t,y,yd,sw):
-#    sw = N.array([False,True,False])
-#    print(sw)
     # Variable alisases
     q = y[0:3]
     qd = y[3:6]
@@ -129,8 +127,6 @@ def res(t,y,yd,sw):
         wT[2] = 0
         gc = (rS-r0) - hS*phiS # Index-3 constraint
         f = v[0] + rS*v[1]
-
-    # State 4 - never occurs since handle_event immediately sends it back to 3
 
     # Calculate residuals
     res1 = v - qd

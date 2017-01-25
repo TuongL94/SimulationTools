@@ -3,12 +3,10 @@
 """
 Created on Thu Dec 22 17:00:54 2016
 
-@author: anders
+@author: Jonathan Astermark, Anders Hansson, Tuong Lam and Oskar Smedman
 
 **********************************
-
     Detects when event occurs
-
 **********************************
 
 """
@@ -16,7 +14,7 @@ import numpy as N
 
 def state_event(t,y,yd,sw):
     '''
-    Calculates 5 values from 5 functions. Each function represents an event and changes sign when
+    Calculates 4 values from 4 functions. Each function represents an event and changes sign when
     an event occurs.
     '''
     # Mechanical and geometric constants of the woodpecker model
@@ -42,17 +40,17 @@ def state_event(t,y,yd,sw):
     phiS=y[1]
     lambda1=y[6]
     phiB=y[2]
-    #Function 1, changes sign when transition from State 1 to State 2 occurs
 
+    # Crossing function 1, changes sign when transition from State 1 to State 2 occurs
     R1=hS*phiS+(rS-r0)
 
-    #FUnction 2, changes sign when transition from State 1 to 3 occurs
+    # Crossing function 2, changes sign when transition from State 1 to 3 occurs
     R2=hS*phiS-(rS-r0)
 
-    #Function 3, changes sign when transition from State 2 to 1 occurs
+    # Crossing function 3, changes sign when transition from State 2 to 1 occurs
     R3=lambda1
 
-    #Function 5, changes sign when transition from State 3 to 4 and back occurs
+    # Crossing function 4, changes sign when transition from State 3 to 4 and back occurs
     R4=hB*phiB-lS-lG+lB+r0
 
     return N.array([R1,R2,R3,R4])
