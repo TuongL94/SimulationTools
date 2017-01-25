@@ -50,7 +50,7 @@ def handle_event(solver,event_info):
     '''
     Event 4 occurs - transition from state 3 to 1
     '''
-    if state_info[3] !=0:
+    if state_info[2] !=0:
         if solver.sw[2] ==True: #Currently in state 3
             #raise StateError('Event occured when it was not allowed')
             if solver.y[5]<0: #Bird rotates in the right direction
