@@ -3,7 +3,6 @@ from assimulo.problem import Implicit_Problem
 from assimulo.solvers import IDA
 from Project_2 import squeezer as sq
 from Project_2 import squeezer2 as sq2
-from Project_2 import modulo
 import matplotlib.pyplot as plt
 
 t0 = 0
@@ -26,7 +25,7 @@ for i in range(size(sim_1.atol)):
 t, y, yd = sim_1.simulate(tfinal, ncp_1)
 plt.plot(t,y[:,14:shape(y)[1]]) # Plots the Lagrange multipliers
 plt.show()
-plt.plot(t,modulo.mod(y[:,0:7],2*pi)) # Plots the position variables i.e beta,gamma etc, modulo 2pi.
+plt.plot(t,(y[:,0:7]+pi)%(2*pi)-pi) # Plots the position variables i.e beta,gamma etc, modulo 2pi.
 plt.show()
 
 # Model 2, squeezer with index 2 constraints
@@ -46,5 +45,6 @@ for i in range(size(sim_2.atol)):
 t2, y2, yd2 = sim_2.simulate(tfinal, ncp_2)
 plt.plot(t2,y2[:,14:shape(y2)[1]]) # Plots the Lagrange multipliers
 plt.show()
-plt.plot(t,modulo.mod(y[:,0:7],2*pi)) # Plots the position variables i.e beta,gamma etc, modulo 2pi.
+plt.plot(t,(y[:,0:7]-pi)%(2*pi)-pi) # Plots the position variables i.e beta,gamma etc, modulo 2pi.
 plt.show()
+
