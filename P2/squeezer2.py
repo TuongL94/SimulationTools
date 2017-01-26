@@ -122,16 +122,3 @@ def squeezer2(t, y, yp):
     res_3 = gv
 
     return hstack((res_1,res_2,res_3))
-
-y0,yp0 = init_squeezer()
-t0 = 0
-tfinal = 0.03
-ncp = 100
-model = Implicit_Problem(squeezer2, y0, yp0, t0)
-model.name = 'Squeezer'
-
-sim = IDA(model)
-sim.suppress_alg = True
-sim.algvar = array([1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0])
-t, y, yd = sim.simulate(tfinal, ncp)
-sim.plot()
