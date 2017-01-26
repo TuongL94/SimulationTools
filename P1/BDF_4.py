@@ -118,20 +118,3 @@ class BDF_4(Explicit_ODE):
         self.log_message('\nSolver options:\n',                                    verbose)
         self.log_message(' Solver            : BDF4',                     verbose)
         self.log_message(' Solver type       : Fixed step\n',                      verbose)
-
-# #Define the rhs
-# def f(t,y):
-#     ydot = -y[0]
-#     return np.array([ydot])
-#
-# #Define an Assimulo problem
-# exp_mod = Explicit_Problem(f, 4)
-# exp_mod.name = 'Simple BDF-4 Example'
-#
-# #Define an explicit solver
-# exp_sim = BDF_4(exp_mod) #Create a BDF solver
-# t, y = exp_sim.simulate(1)
-# exp_sim.plot()
-# mpl.show()
-
-
